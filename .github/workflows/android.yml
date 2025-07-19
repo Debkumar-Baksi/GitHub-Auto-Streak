@@ -1,46 +1,55 @@
-name: Build Kivy APK
+name: Build APK with Buildozer
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: "3.10"
+        python-version: 3.10
 
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y git zip unzip openjdk-17-jdk python3-pip libtool libffi-dev libssl-dev \
-          autoconf automake build-essential cmake zlib1g-dev
+        sudo apt install -y libgl1-mesa-dev unzip zip openjdk-17-jdk python3-pip
+        pip install --upgrade pip
+        pip install buildozer cython
 
-    - name: Install buildozer
+    - name: Install Android SDK and NDK
       run: |
-        pip install --upgrade pip setuptools
-        pip install cython buildozer
-
-    - name: Install Android SDK and tools
-      run: |
+        mkdir -p "$HOME/android-sdk/cmdline-tools"
+        cd "$HOME/android-sdk/cmdline-tools"
+        wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
+        unzip cmdline-tools.zip -d tools
+        export ANDROID_SDK_ROOT=$HOME/android-sdk
+        export PATH=$ANDROID_SDK_ROOT/cmdline-tools/tools/bin:$PATH
         yes | sdkmanager --licenses
-        sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+        sdkmanager "platform-tools" "platforms;android-33" "build-tools;34.0.0" "ndk;25.2.9519653"
+
+    - name: Set environment variables
+      run: |
+        echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
+        echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
+        echo "$HOME/.buildozer/android/platform/android-sdk/platform-tools" >> $GITHUB_PATH
+
+    - name: Initialize buildozer
+      run: buildozer init
 
     - name: Build APK
-      run: |
-        buildozer android debug
+      run: buildozer android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: GitStreakApp-debug-apk
+        name: my-kivy-app
         path: bin/*.apk
