@@ -132,10 +132,9 @@ jobs:
         sdk-platform: '33'
         sdk-build-tools: '33.0.0'
         
-    - name: Initialize buildozer
+    - name: Setup buildozer environment
       run: |
         export ANDROID_HOME=$ANDROID_SDK_ROOT
-        buildozer init
         mkdir -p ~/.buildozer/android/platform
         cd ~/.buildozer/android/platform
         if [ ! -d "python-for-android" ]; then
