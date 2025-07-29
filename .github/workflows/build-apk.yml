@@ -136,13 +136,16 @@ jobs:
       run: |
         export ANDROID_HOME=$ANDROID_SDK_ROOT
         export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+        rm -rf ~/.buildozer
+        rm -rf .buildozer
         mkdir -p .buildozer/android/platform
         cd .buildozer/android/platform
-        rm -rf python-for-android
         git clone https://github.com/kivy/python-for-android.git
         cd python-for-android
         git checkout master
         cd ~/work/GitHub-Auto-Streak/GitHub-Auto-Streak
+        echo "Current directory: $(pwd)"
+        echo "Buildozer directory contents:"
         ls -la .buildozer/android/platform/
         buildozer android clean
         
