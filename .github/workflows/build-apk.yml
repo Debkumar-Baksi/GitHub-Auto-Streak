@@ -135,19 +135,20 @@ jobs:
     - name: Setup buildozer environment
       run: |
         export ANDROID_HOME=$ANDROID_SDK_ROOT
+        export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
         mkdir -p ~/.buildozer/android/platform
         cd ~/.buildozer/android/platform
-        if [ ! -d "python-for-android" ]; then
-          git clone https://github.com/kivy/python-for-android.git
-        fi
+        rm -rf python-for-android
+        git clone https://github.com/kivy/python-for-android.git
         cd python-for-android
         git checkout master
         cd ~/work/GitHub-Auto-Streak/GitHub-Auto-Streak
         buildozer android clean
-      
+        
     - name: Build APK
       run: |
         export ANDROID_HOME=$ANDROID_SDK_ROOT
+        export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
         buildozer android debug
         
     - name: Upload APK artifact
