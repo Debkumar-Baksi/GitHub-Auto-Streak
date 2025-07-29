@@ -77,6 +77,45 @@ jobs:
           gstreamer1.0-gl \
           gstreamer1.0-gtk3 \
           gstreamer1.0-qt5 \
+          gstreamer1.0-pulseaudio \
+          libffi-dev \
+          libssl-dev \
+          libjpeg-dev \
+          libpng-dev \
+          libfreetype6-dev \
+          libharfbuzz-dev \
+          libx11-dev \
+          libxext-dev \
+          libxrender-dev \
+          libxinerama-dev \
+          libxi-dev \
+          libxrandr-dev \
+          libxcursor-dev \
+          libxcomposite-dev \
+          libxdamage-dev \
+          libxfixes-dev \
+          libxss-dev \
+          libxtst-dev \
+          libxrandr-dev \
+          libasound2-dev \
+          libpulse-dev \
+          libdbus-1-dev \
+          libudev-dev \
+          libgles2-mesa-dev \
+          libegl1-mesa-dev \
+          libgstreamer-plugins-base1.0-dev \
+          libgstreamer-plugins-bad1.0-dev \
+          gstreamer1.0-plugins-base \
+          gstreamer1.0-plugins-good \
+          gstreamer1.0-plugins-bad \
+          gstreamer1.0-plugins-ugly \
+          gstreamer1.0-libav \
+          gstreamer1.0-tools \
+          gstreamer1.0-x \
+          gstreamer1.0-alsa \
+          gstreamer1.0-gl \
+          gstreamer1.0-gtk3 \
+          gstreamer1.0-qt5 \
           gstreamer1.0-pulseaudio
           
     - name: Install Python dependencies
@@ -84,6 +123,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install buildozer
         pip install cython==0.29.33
+        pip install python-for-android
+        pip install kivy[base] kivy_examples
         
     - name: Set up Android SDK
       uses: android-actions/setup-android@v3
@@ -91,6 +132,10 @@ jobs:
         sdk-platform: '33'
         sdk-build-tools: '33.0.0'
         
+    - name: Clean buildozer cache
+      run: |
+        buildozer android clean
+      
     - name: Build APK
       run: |
         export ANDROID_HOME=$ANDROID_SDK_ROOT
