@@ -132,8 +132,18 @@ jobs:
         sdk-platform: '33'
         sdk-build-tools: '33.0.0'
         
-    - name: Clean buildozer cache
+    - name: Initialize buildozer
       run: |
+        export ANDROID_HOME=$ANDROID_SDK_ROOT
+        buildozer init
+        mkdir -p ~/.buildozer/android/platform
+        cd ~/.buildozer/android/platform
+        if [ ! -d "python-for-android" ]; then
+          git clone https://github.com/kivy/python-for-android.git
+        fi
+        cd python-for-android
+        git checkout master
+        cd ~/work/GitHub-Auto-Streak/GitHub-Auto-Streak
         buildozer android clean
       
     - name: Build APK
